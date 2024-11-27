@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from . import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,UserChangeForm
 from django.contrib.auth import authenticate,login
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # def add_author(request):
@@ -34,14 +35,29 @@ def user_login(request):
             user_pass=form.cleaned_data['password']
             user=authenticate(username=user_name,password=user_pass)
             if user  is not None:
-                messages.success(request,'Account created Successfully')
+                messages.success(request,'Logged in  Successfully')
                 login(request,user)
-                return redirect('profile')
+                return redirect('user_login')
             else:
-                return redirect('register')
+                messages.warning(request,'Login information is incorrect')
+                return redirect('profile')
     else:
         form=AuthenticationForm()
-        return render(request,'register.html',{'form' : form, 'type':'Login'})
+    return render(request,'register.html',{'form' : form, 'type':'Login'})
+
+@login_required
+def profile(request):
+    if request.method =='POST':
+        profile_form=forms.UserChangeForm(request.POST,instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request,'Profile Updated Successfully')
+            return redirect('profile')
+    else:
+         profile_form=forms.UserChangeForm(instance=request.user)
+    return render(request,'profile.html',{'form' :  profile_form})
+
+
 
 
 
