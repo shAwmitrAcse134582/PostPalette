@@ -3,12 +3,10 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<h1 style="text-align: center;">profile page</h1>
-<button class="btn btn-warning btn-sm " href="{% url 'pass_change' %}">Change Your Password</button>
-
+<h1 style="text-align: center;">change your password from here</h1>
 <form style='width:50%;margin:auto' method='POST'>
       {% csrf_token %}
-      {{form | crispy}}
+    {{form | crispy}}
 
 <button class='btn btn-warning mb-5'>Submit</button>
 <form>
